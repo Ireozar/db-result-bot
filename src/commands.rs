@@ -18,3 +18,12 @@ pub async fn help(
     .await?;
     Ok(())
 }
+
+#[poise::command(prefix_command, slash_command)]
+pub async fn winner(
+    ctx: Context<'_>,
+    #[description = "DuelingBook replay link"] choice: String,
+) -> Result<(), Error> {
+    //logic
+    Ok(())
+}

@@ -12,7 +12,7 @@ type Context<'a> = poise::Context<'a, Data, Error>;
 async fn main() {
     // env_logger::init();
     let options = poise::FrameworkOptions {
-        commands: vec![commands::help()],
+        commands: vec![commands::help(), commands::winner()],
         prefix_options: poise::PrefixFrameworkOptions {
             prefix: Some("~".into()),
             edit_tracker: Some(Arc::new(poise::EditTracker::for_timespan(
