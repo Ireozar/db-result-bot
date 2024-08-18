@@ -67,8 +67,11 @@ async fn main() {
     let token = var("DISCORD_TOKEN").expect("Missing 'DISCORD_TOKEN' env var.");
     let intents =
         serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT;
-    let client = serenity::ClientBuilder::new(token, intents)
+    let mut client = serenity::ClientBuilder::new(token, intents)
         .framework(framework)
-        .await;
-    client.unwrap().start().await.unwrap();
+        .await
+        .expect("Err creating client");
+    if let Err(why) = client.start().await {
+        println!("Client error: {why:?}");
+    }
 }
