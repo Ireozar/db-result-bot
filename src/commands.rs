@@ -1,4 +1,4 @@
-use crate::{Context, Error};
+use crate::{winner, Context, Error};
 
 #[poise::command(prefix_command, track_edits, slash_command)]
 pub async fn help(
@@ -22,8 +22,9 @@ pub async fn help(
 #[poise::command(prefix_command, slash_command)]
 pub async fn winner(
     ctx: Context<'_>,
-    #[description = "DuelingBook replay link"] choice: String,
+    #[description = "DuelingBook replay link"] url: String,
 ) -> Result<(), Error> {
-    //logic
+    let response = format!("The winner is: {}", winner::get_winner(url).await?);
+    ctx.say(response).await?;
     Ok(())
 }

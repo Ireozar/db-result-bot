@@ -1,4 +1,5 @@
 mod commands;
+mod winner;
 
 use poise::serenity_prelude as serenity;
 use std::{env::var, sync::Arc, time::Duration};
