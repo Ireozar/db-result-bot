@@ -1,5 +1,5 @@
 # db-result-bot
-A Discord bot to get the winner of a DuelingBook replay link submitted.
+A Discord bot to get some data about a DuelingBook replay link submitted.
 
 ## Installation
 - build the binary
