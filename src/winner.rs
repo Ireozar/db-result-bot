@@ -161,7 +161,7 @@ async fn content(url: &str) -> Result<Value, fantoccini::error::CmdError> {
             });
         });",
     vec![]).await?;
-    tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+    tokio::time::sleep(tokio::time::Duration::from_millis(2000)).await;
     let response = client
         .execute("return window.replayResponse;", vec![])
         .await?;
