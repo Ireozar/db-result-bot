@@ -1,4 +1,5 @@
-use crate::{winner, Context, Error};
+use crate::winner;
+use crate::{Context, Error};
 
 #[poise::command(prefix_command, track_edits, slash_command)]
 pub async fn help(
@@ -19,12 +20,13 @@ pub async fn help(
     Ok(())
 }
 
-#[poise::command(prefix_command, slash_command)]
-pub async fn winner(
+#[poise::command(prefix_command)]
+pub async fn process(
     ctx: Context<'_>,
     #[description = "DuelingBook replay link"] url: String,
 ) -> Result<(), Error> {
-    let response = format!("The winner is: {}", winner::get_winner(url).await?);
-    ctx.say(response).await?;
+    ctx.say("Processing...").await?;
+    let result = winner::process(url).await?;
+    ctx.say(result).await?;
     Ok(())
 }

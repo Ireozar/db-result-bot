@@ -1302,6 +1302,8 @@ dependencies = [
  "fantoccini",
  "poise",
  "reqwest",
+ "serde",
+ "serde_json",
  "tokio",
 ]
 
