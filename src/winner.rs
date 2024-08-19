@@ -1,25 +1,28 @@
 use fantoccini::ClientBuilder;
 use poise::serenity_prelude::Result;
 use reqwest::Error;
-use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 pub async fn process(url: String) -> Result<String, Error> {
     let data = fetch_html(&url).await?;
     let output = format!(
-        "Result:\nDate of Duel: {}\nRPS winner: {}\nWinner: {}\nOutcome: {} {}-{} {}",
-        data.date.trim(),
-        data.rps_winner.trim(),
-        data.winner.trim(),
-        data.player1.trim(),
-        data.wins1.trim(),
-        data.wins2.trim(),
-        data.player2.trim()
+        "Date of Duel: {}\nLength: {}\nRPS winner: {}\nWinner: {}\nOutcome: {} {}-{} {}\nDeck size:\n\t{}:\n\t  {}\n\t{}:\n\t  {}",
+        data.date,
+        data.duration,
+        data.rps_winner,
+        data.winner,
+        data.player1,
+        data.wins1,
+        data.wins2,
+        data.player2,
+        data.player1,
+        data.decksize1,
+        data.player2,
+        data.decksize2
     );
     Ok(output)
 }
 
-#[derive(Serialize, Deserialize)]
 struct Stats {
     date: String,
     rps_winner: String,
@@ -28,6 +31,9 @@ struct Stats {
     player2: String,
     wins1: String,
     wins2: String,
+    duration: String,
+    decksize1: String,
+    decksize2: String,
 }
 
 async fn fetch_html(url: &str) -> Result<Stats, Error> {
@@ -41,6 +47,9 @@ async fn fetch_html(url: &str) -> Result<Stats, Error> {
         player2: String::new(),
         wins1: String::new(),
         wins2: String::new(),
+        duration: String::new(),
+        decksize1: String::new(),
+        decksize2: String::new(),
     };
     stats.date = json["date"].to_string();
     stats.player1 = json["player1"]["username"].to_string();
@@ -59,11 +68,29 @@ async fn fetch_html(url: &str) -> Result<Stats, Error> {
                     wins1 += 1
                 }
                 if play["over"].to_string() == "true" {
+                    let duration = play["seconds"].to_string().parse::<u32>().unwrap();
+                    stats.duration = format!(
+                        "{}m, {}s",
+                        (duration / 60).to_string(),
+                        (duration % 60).to_string(),
+                    );
                     break;
                 }
             }
         }
     }
+    stats.decksize1 = format!(
+        "Main: {}, Extra: {}, Side: {}",
+        json["player1"]["main_total"].to_string(),
+        json["player1"]["extra_total"].to_string(),
+        json["player1"]["side_total"].to_string()
+    );
+    stats.decksize2 = format!(
+        "Main: {}, Extra: {}, Side: {}",
+        json["player2"]["main_total"].to_string(),
+        json["player2"]["extra_total"].to_string(),
+        json["player2"]["side_total"].to_string()
+    );
     if stats.player1.starts_with('"') && stats.player1.ends_with('"') {
         stats.player1 = stats.player1[1..stats.player1.len() - 1].to_string();
     }
@@ -134,7 +161,7 @@ async fn content(url: &str) -> Result<Value, fantoccini::error::CmdError> {
             });
         });",
     vec![]).await?;
-    tokio::time::sleep(tokio::time::Duration::from_secs(4)).await;
+    tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
     let response = client
         .execute("return window.replayResponse;", vec![])
         .await?;

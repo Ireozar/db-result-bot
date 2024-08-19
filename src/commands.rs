@@ -20,12 +20,13 @@ pub async fn help(
     Ok(())
 }
 
-#[poise::command(prefix_command)]
+#[poise::command(/* prefix_command,*/ slash_command)]
 pub async fn process(
     ctx: Context<'_>,
     #[description = "DuelingBook replay link"] url: String,
 ) -> Result<(), Error> {
-    ctx.say("Processing...").await?;
+    // ctx.say("Processing...").await?;
+    ctx.defer().await?;
     let result = winner::process(url).await?;
     ctx.say(result).await?;
     Ok(())
