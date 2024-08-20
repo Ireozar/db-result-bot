@@ -31,3 +31,14 @@ pub async fn process(
     ctx.say(result).await?;
     Ok(())
 }
+
+#[poise::command(slash_command)]
+pub async fn getdeck(
+    ctx: Context<'_>,
+    #[description = "DuelingBook replay link"] url: String,
+) -> Result<(), Error> {
+    ctx.defer_ephemeral().await?;
+    let result = winner::deck(url).await?;
+    ctx.say(result).await?;
+    Ok(())
+}

@@ -13,16 +13,13 @@ type Context<'a> = poise::Context<'a, Data, Error>;
 async fn main() {
     // env_logger::init();
     let options = poise::FrameworkOptions {
-        commands: vec![commands::help(), commands::process()],
+        commands: vec![commands::help(), commands::process(), commands::getdeck()],
         prefix_options: poise::PrefixFrameworkOptions {
             prefix: Some("~".into()),
             edit_tracker: Some(Arc::new(poise::EditTracker::for_timespan(
                 Duration::from_secs(3600),
             ))),
-            additional_prefixes: vec![
-                poise::Prefix::Literal("hey_bot"),
-                poise::Prefix::Literal("'"),
-            ],
+            additional_prefixes: vec![poise::Prefix::Literal("'")],
             ..Default::default()
         },
         pre_command: |ctx| {
@@ -72,7 +69,8 @@ async fn main() {
         .framework(framework)
         .await
         .expect("Err creating client");
-    if let Err(why) = client.start().await {
+    const NUM_SHARD: u32 = 1;
+    if let Err(why) = client.start_shards(NUM_SHARD).await {
         println!("Client error: {why:?}");
     }
 }
