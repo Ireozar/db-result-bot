@@ -16,7 +16,7 @@ firefox -ProfileManager
 - log into the profile's duelingbook and let it remember your login
 - start geckodriver using:
 ```
-./gecho.sh $PATH_TO_FIREFOX_PROFILE
+./gecko.sh $PATH_TO_FIREFOX_PROFILE
 ```
 (with the path set to your custom profile's path, typically something like `~/.mozilla/firefox/$PROFILE`)
 - start the binary with the env variable DISCORD_TOKEN set
